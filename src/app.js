@@ -1,3 +1,4 @@
+// DOM Elements
 const taskInput = document.getElementById("task-input");
 const taskList = document.getElementById("task-list");
 const showAllButton = document.getElementById("show-all");
@@ -5,8 +6,10 @@ const showActiveButton = document.getElementById("show-active");
 const showCompletedButton = document.getElementById("show-completed");
 const clearCompletedButton = document.getElementById("clear-completed");
 
+// Current filter state
 let currentFilter = "all";
 
+// Event listener for adding a new task using the "Enter" key
 taskInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     addTask(taskInput.value);
@@ -14,6 +17,9 @@ taskInput.addEventListener("keydown", (event) => {
   }
 });
 
+
+
+// Save tasks to localStorage.
 function saveTasks() {
   const tasks = Array.from(taskList.children).map((li) => ({
     text: li.querySelector("span").textContent,
@@ -22,6 +28,7 @@ function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+// Load tasks from localStorage and display them.
 function loadTasks() {
   const tasks = JSON.parse(localStorage.getItem("tasks"));
   if (tasks) {
@@ -29,6 +36,12 @@ function loadTasks() {
   }
 }
 
+/**
+ * Add a task to the task list.
+ *
+ * @param {string} taskText - Task description.
+ * @param {boolean} [completed=false] - Task completion status.
+ */
 function addTask(taskText, completed = false) {
   if (taskText.trim() !== "") {
     const li = document.createElement("li");
@@ -71,6 +84,11 @@ function addTask(taskText, completed = false) {
   }
 }
 
+/**
+ * Edit an existing task by converting it into an input element.
+ *
+ * @param {HTMLElement} task - The task element to edit.
+ */
 function editTask(task) {
   const input = document.createElement("input");
   input.type = "text";
@@ -87,6 +105,11 @@ function editTask(task) {
   input.focus();
 }
 
+/**
+ * Apply the specified filter to the tasks.
+ *
+ * @param {string} filter - The filter to apply ("all", "active", or "completed").
+ */
 function filterTasks(filter) {
   currentFilter = filter;
   Array.from(taskList.children).forEach((li) => {
@@ -104,6 +127,10 @@ function filterTasks(filter) {
   });
 }
 
+/** 
+
+    Remove all completed tasks from the task list.
+  */
 function clearCompletedTasks() {
   Array.from(taskList.children).forEach((li) => {
     if (li.querySelector('input[type="checkbox"]').checked) {
@@ -113,6 +140,11 @@ function clearCompletedTasks() {
   saveTasks();
 }
 
+/**
+
+    Set the specified tab as active, and remove the active state from the others.
+    @param {HTMLElement} tab - The tab element to set as active.
+  */
 function setActiveTab(tab) {
   showAllButton.classList.remove("active-tab");
   showActiveButton.classList.remove("active-tab");
@@ -120,6 +152,7 @@ function setActiveTab(tab) {
   tab.classList.add("active-tab");
 }
 
+// Event listeners for filter buttons
 showAllButton.addEventListener("click", () => {
   filterTasks("all");
   setActiveTab(showAllButton);
@@ -134,5 +167,6 @@ showCompletedButton.addEventListener("click", () => {
 });
 clearCompletedButton.addEventListener("click", clearCompletedTasks);
 
+// Load tasks and set the initial active tab
 loadTasks();
 setActiveTab(showAllButton);
